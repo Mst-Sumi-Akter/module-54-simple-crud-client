@@ -13,13 +13,18 @@ const Users = () => {
         fetch('http://localhost:3000/users',{
             method: 'POST',
             headers:{
-                'content-type':'application/json'
+                'content-type':'application/JSON'
             },
             body: JSON.stringify(newUser)
         })
         .then(res=>res.json())
         .then(data =>{
             console.log('after saving user', data);
+            if (data.insertedId){
+                  alert('users added successfully');
+            e.target.reset();
+            }
+              
         })
     }
     
