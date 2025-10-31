@@ -6,7 +6,7 @@ const UserDetail = () => {
     console.log(user);
     return (
         <div>
-            details
+        <h1> User Details</h1>
         </div>
     );
 };
