@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -68,6 +69,7 @@ const Users = () => {
         ) : (
           users.map(user => 
           <p key={user._id || user.email}>{user.name} : {user.email}
+          <Link to = {`/users/${user._id}`}>Details</Link>
           <button onClick={()=>handleDeleteUser (user._id) }>X</button>
           </p>)
         )}
@@ -77,3 +79,5 @@ const Users = () => {
 };
 
 export default Users;
+
+
