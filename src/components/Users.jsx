@@ -1,46 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Users = () => {
+  const [users, setUsers] = useState([]);
 
-    const handleAddUser = e => {
-        e.preventDefault();
-        const name = e.target.name.value;
-        const email = e.target.email.value;
-        console.log(name,email);
-        const newUser = {name,email};
+  // Fetch users from the server
+  useEffect(() => {
+    fetch('http://localhost:3000/users')
+      .then(res => res.json())
+      .then(data => setUsers(data))
+      .catch(err => console.error('Error fetching users:', err));
+  }, []);
 
-        // save this user data to the database(via server)
-        fetch('http://localhost:3000/users',{
-            method: 'POST',
-            headers:{
-                'content-type':'application/JSON'
-            },
-            body: JSON.stringify(newUser)
-        })
-        .then(res=>res.json())
-        .then(data =>{
-            console.log('after saving user', data);
-            if (data.insertedId){
-                  alert('users added successfully');
-            e.target.reset();
-            }
-              
-        })
-    }
-    
+  const handleAddUser = e => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const newUser = { name, email };
 
+    fetch('http://localhost:3000/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newUser),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.insertedId) {
+          newUser._id = data.insertedId;
+          setUsers([...users, newUser]);
+          alert('User added successfully');
+          e.target.reset();
+        }
+      })
+      .catch(err => console.error('Error adding user:', err));
+  };
 
-    return (
-        <div>
-            <form onSubmit={handleAddUser}>
-                <input type="text" name = "name" id="" />
-                <br />
-                <input type="email" name = "email" id="" />
-                <br />
-                <input type="submit" value="Add User" />
-            </form>
-        </div>
-    );
+  return (
+    <div>
+      <form onSubmit={handleAddUser}>
+        <input type="text" name="name" placeholder="Name" required />
+        <br />
+        <input type="email" name="email" placeholder="Email" required />
+        <br />
+        <input type="submit" value="Add User" />
+      </form>
+
+      <hr />
+
+      <h2>Users List:</h2>
+      <div>
+        {users.length === 0 ? (
+          <p>No users found</p>
+        ) : (
+          users.map(user => 
+          <p key={user._id || user.email}>{user.name} : {user.email}
+          <button>X</button>
+          </p>)
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Users;
