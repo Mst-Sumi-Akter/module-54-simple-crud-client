@@ -34,6 +34,21 @@ const Users = () => {
       .catch(err => console.error('Error adding user:', err));
   };
 
+  const handleDeleteUser = (id) =>{
+  console.log('delete a user',id)
+  fetch(`http://localhost:3000/users/${id}`,{
+    method:'DELETE'
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    console.log('after delete', data);
+    if(data.deletedCount){
+        alert('deleted successfully')
+    }
+     setUsers(users.filter(user => user._id !== id));
+  })
+  }
+
   return (
     <div>
       <form onSubmit={handleAddUser}>
@@ -46,14 +61,14 @@ const Users = () => {
 
       <hr />
 
-      <h2>Users List:</h2>
+      <h2>Users List: {users.length}</h2>
       <div>
         {users.length === 0 ? (
           <p>No users found</p>
         ) : (
           users.map(user => 
           <p key={user._id || user.email}>{user.name} : {user.email}
-          <button>X</button>
+          <button onClick={()=>handleDeleteUser (user._id) }>X</button>
           </p>)
         )}
       </div>
